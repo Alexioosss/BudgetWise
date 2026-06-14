@@ -10,8 +10,13 @@ class TransactionRepository(
     private val entityToDomain: (TransactionEntity) -> Transaction,
     private val domainToEntity: (Transaction) -> TransactionEntity
 ) {
+    suspend fun getAllTransactions(): List<Transaction> {
+        val entities = dao.getAllTransactions()
+        return entities.stream().map{ entity -> this.entityToDomain(entity) }.toList()
+    }
+
     suspend fun getTransaction(id: Int): Transaction? {
-        val entity = dao.getTransactionById(id);
+        val entity = dao.getTransactionById(id)
         return entity?.let { this.entityToDomain(it) }
     }
 

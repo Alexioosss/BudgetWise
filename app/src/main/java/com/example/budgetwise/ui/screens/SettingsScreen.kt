@@ -63,7 +63,7 @@ fun SettingsScreen(
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Left,
-            modifier = Modifier.fillMaxWidth().padding(top = 10.dp)
+            modifier = Modifier.fillMaxWidth().padding(top = 20.dp)
         )
         Spacer(
             modifier = Modifier.height(25.dp)

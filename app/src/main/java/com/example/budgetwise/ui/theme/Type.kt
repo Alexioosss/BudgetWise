@@ -28,6 +28,18 @@ val Typography = Typography(
         lineHeight = 20.sp,
         letterSpacing = 0.25.sp
     ),
+    bodyLarge = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontSize = 22.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.75.sp
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontSize = 20.sp,
+        lineHeight = 22.sp,
+        letterSpacing = 0.5.sp
+    ),
     bodySmall = TextStyle(
         fontFamily = FontFamily.Default,
         fontSize = 18.sp,
