@@ -1,17 +1,7 @@
 package com.example.budgetwise
 
 import android.app.Application
-import android.os.Build
-import androidx.annotation.RequiresApi
+import dagger.hilt.android.HiltAndroidApp
 
-class BudgetWiseApplication : Application() {
-    override fun onCreate() {
-        super.onCreate()
-        AppContainer.init(this)
-    }
-
-    override fun onTerminate() {
-        super.onTerminate()
-        AppContainer.terminate()
-    }
-}
+@HiltAndroidApp
+class BudgetWiseApplication : Application()

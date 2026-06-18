@@ -1,60 +1,78 @@
 package com.example.budgetwise.ui.components
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.budgetwise.ui.domain.models.Categories
+import com.example.budgetwise.ui.domain.models.TransactionTypes
 
 @Composable
 fun TransactionCard(
-    amount: String,
-    description: String,
+    modifier: Modifier = Modifier,
+    id: Long,
     dateTime: String,
-    modifier: Modifier = Modifier
+    amount: Double,
+    category: Categories,
+    notes: String? = null,
+    transactionType: TransactionTypes,
+    recurringDate: String?
 ) {
-    val onSurface = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
-    Box(
+    val amountColor = if(transactionType == TransactionTypes.INCOMING)
+        MaterialTheme.colorScheme.primary
+    else MaterialTheme.colorScheme.error
+    val amountPrefix = if(transactionType == TransactionTypes.INCOMING) "+ £" else "- £"
+    Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp)
-            .drawBehind {
-                val stroke = 1.5.dp.toPx()
-                drawLine(onSurface,
-                    Offset(0f, size.height),
-                    Offset(size.width, size.height),
-                    stroke
+            .padding(horizontal = 4.dp, vertical = 6.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = category.label,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = if(!recurringDate.isNullOrBlank())
+                    "$dateTime - recurring on $recurringDate" else dateTime,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            if(!notes.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = notes,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
-            .padding(16.dp)
-    ) {
-        Column {
-            Text(
-                text = description,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Medium
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = dateTime,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = amount,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
-            )
         }
+        Text(
+            text = "$amountPrefix${"%.2f".format(amount)}",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            color = amountColor
+        )
     }
 }

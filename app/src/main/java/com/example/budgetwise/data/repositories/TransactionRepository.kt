@@ -1,26 +1,26 @@
 package com.example.budgetwise.data.repositories
 
 import com.example.budgetwise.data.dao.TransactionDAO
-import com.example.budgetwise.data.models.TransactionEntity
-import com.example.budgetwise.ui.domain.model.Transaction
+import com.example.budgetwise.data.mappers.toDomain
+import com.example.budgetwise.data.mappers.toEntity
+import com.example.budgetwise.ui.domain.models.Transaction
+import javax.inject.Inject
 
 
-class TransactionRepository(
-    private val dao: TransactionDAO,
-    private val entityToDomain: (TransactionEntity) -> Transaction,
-    private val domainToEntity: (Transaction) -> TransactionEntity
+class TransactionRepository @Inject constructor(
+    private val dao: TransactionDAO
 ) {
-    suspend fun getAllTransactions(): List<Transaction> {
-        val entities = dao.getAllTransactions()
-        return entities.stream().map{ entity -> this.entityToDomain(entity) }.toList()
-    }
+    suspend fun getAllTransactions(): List<Transaction> =
+        dao.getAllTransactions().map { it.toDomain() }
 
-    suspend fun getTransaction(id: Int): Transaction? {
-        val entity = dao.getTransactionById(id)
-        return entity?.let { this.entityToDomain(it) }
-    }
+    suspend fun getTransaction(id: Long): Transaction? =
+        dao.getTransactionById(id)?.toDomain()
 
     suspend fun insertTransaction(transaction: Transaction) {
-        dao.insertTransaction(this.domainToEntity(transaction))
+        dao.insertTransaction(transaction.toEntity())
+    }
+
+    suspend fun deleteTransactionById(id: Long) {
+        dao.deleteById(id)
     }
 }

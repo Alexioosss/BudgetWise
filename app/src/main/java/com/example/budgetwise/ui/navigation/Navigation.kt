@@ -1,19 +1,17 @@
 package com.example.budgetwise.ui.navigation
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.TrendingDown
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Event
@@ -36,14 +34,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.budgetwise.ui.domain.model.FontSize
-import com.example.budgetwise.ui.domain.model.ThemeMode
+import com.example.budgetwise.ui.domain.models.FontSize
+import com.example.budgetwise.ui.domain.models.ThemeMode
+import com.example.budgetwise.ui.screens.AddTransactionScreen
 import com.example.budgetwise.ui.screens.MainScreen
 import com.example.budgetwise.ui.screens.SettingsScreen
 import com.example.budgetwise.ui.screens.TransactionsScreen
@@ -95,7 +93,10 @@ fun AppNavigation(navController: NavHostController,
                         Icon(
                             imageVector = Icons.Filled.Dashboard,
                             contentDescription = "Home",
-                            tint = MaterialTheme.colorScheme.onSurface)
+                            tint = if(currentRoute == "home")
+                                MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.onSurface
+                        )
                     }
                     IconButton(
                         onClick = {
@@ -110,7 +111,10 @@ fun AppNavigation(navController: NavHostController,
                         Icon(
                             imageVector = Icons.Filled.Receipt,
                             contentDescription = "Transactions",
-                            tint = MaterialTheme.colorScheme.onSurface)
+                            tint = if(currentRoute == "transactions")
+                                MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.onSurface
+                        )
                     }
                     IconButton(
                         onClick = { showBottomSheet.value = true }
@@ -136,7 +140,10 @@ fun AppNavigation(navController: NavHostController,
                         Icon(
                             imageVector = Icons.Filled.Event,
                             contentDescription = "Upcoming",
-                            tint = MaterialTheme.colorScheme.onSurface)
+                            tint = if(currentRoute == "upcoming")
+                                MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.onSurface
+                        )
                     }
                     IconButton(
                         onClick = {
@@ -151,7 +158,10 @@ fun AppNavigation(navController: NavHostController,
                         Icon(
                             imageVector = Icons.Filled.Settings,
                             contentDescription = "Settings",
-                            tint = MaterialTheme.colorScheme.onSurface)
+                            tint = if(currentRoute == "settings")
+                                MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.onSurface
+                        )
                     }
                 }
             }
@@ -173,6 +183,10 @@ fun AppNavigation(navController: NavHostController,
                     onFontSizeChange = onFontSizeChange
                 )
             }
+            composable("add_transaction/{type}") { backStackEntry ->
+                val transactionType = backStackEntry.arguments?.getString("type")
+                AddTransactionScreen(transactionType)
+            }
         }
         if(showBottomSheet.value) {
             ModalBottomSheet(
@@ -187,16 +201,37 @@ fun AppNavigation(navController: NavHostController,
                 ) {
                     Text(
                         text = "Select Action",
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.headlineSmall,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     ListItem(
-                        headlineContent = { Text("Add Incoming Transaction") },
+                        headlineContent = { Text("Add Income") },
+                        leadingContent = {
+                            Icon(
+                                Icons.AutoMirrored.Filled.TrendingUp,
+                                tint = MaterialTheme.colorScheme.primary,
+                                contentDescription = null)
+                         },
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
                                 showBottomSheet.value = false
-                                navController.navigate("incoming")
+                                navController.navigate("add_transaction/incoming")
+                            }
+                    )
+                    ListItem(
+                        headlineContent = { Text("Add Expense") },
+                        leadingContent = {
+                            Icon(
+                                Icons.AutoMirrored.Filled.TrendingDown,
+                                tint = MaterialTheme.colorScheme.error,
+                                contentDescription = null)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                showBottomSheet.value = false
+                                navController.navigate("add_transaction/outgoing")
                             }
                     )
                 }

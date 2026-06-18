@@ -6,27 +6,32 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
-import com.example.budgetwise.ui.domain.model.FontSize
+import com.example.budgetwise.ui.domain.models.FontSize
 
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF2E7D6B),
-    onPrimary = LightText,
     background = SoftMint,
+    surface = LightSurface,
+    surfaceVariant = LightSurfaceVariant,
     onBackground = LightText,
-    surface = Color.White,
-    onSurface = LightText
+    onSurface = LightText,
+    onSurfaceVariant = LightTextSecondary,
+    primary = IncomingGreen,
+    error = OutgoingRed,
+    outlineVariant = NeutralIcon
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFF4DB6AC),
-    onPrimary = DarkText,
-    background = DarkTeal,
+    background = DarkSurface,
+    surface = DarkSurface,
+    surfaceVariant = DarkSurfaceVariant,
     onBackground = DarkText,
-    surface = Color(0xFF121212),
-    onSurface = DarkText
+    onSurface = DarkText,
+    onSurfaceVariant = DarkTextSecondary,
+    primary = IncomingGreenDark,
+    error = OutgoingRedDark,
+    outlineVariant = NeutralIconDark
 )
 
 @Composable
