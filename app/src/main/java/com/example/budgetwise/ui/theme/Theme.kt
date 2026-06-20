@@ -40,17 +40,12 @@ fun BudgetWiseTheme(
     fontSize: FontSize = FontSize.MEDIUM,
     content: @Composable () -> Unit
 ) {
-    val scale = when (fontSize) {
-        FontSize.SMALL -> 0.85f
-        FontSize.MEDIUM -> 1f
-        FontSize.LARGE -> 1.2f
-    }
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val colorScheme = if(darkTheme) DarkColorScheme else LightColorScheme
 
     CompositionLocalProvider(
         LocalDensity provides Density(
             density = LocalDensity.current.density,
-            fontScale = LocalDensity.current.fontScale * scale
+            fontScale = LocalDensity.current.fontScale * fontSize.scaleFactor
         )
     ) {
         MaterialTheme(

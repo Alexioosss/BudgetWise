@@ -27,9 +27,7 @@ import com.example.budgetwise.ui.viewmodels.TransactionsViewModel
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun UpcomingScreen(
-    viewModel: TransactionsViewModel = hiltViewModel()
-) {
+fun UpcomingScreen(viewModel: TransactionsViewModel = hiltViewModel()) {
     val upcomingTransactions by viewModel.upcomingTransactions.collectAsState()
 
     PageHeader(

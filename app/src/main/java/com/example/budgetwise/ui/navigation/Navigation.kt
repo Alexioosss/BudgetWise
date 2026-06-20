@@ -24,17 +24,20 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -56,10 +59,11 @@ fun AppNavigation(navController: NavHostController,
                   currentFontSize: FontSize,
                   onFontSizeChange: (FontSize) -> Unit) {
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = currentBackStackEntry?.destination?.route
-    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val showBottomSheet = remember { mutableStateOf(false) }
-    val ICON_SIZE = 32.dp
+    val currentRoute: String? = currentBackStackEntry?.destination?.route
+    val bottomSheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val showBottomSheet: MutableState<Boolean> = remember { mutableStateOf(false) }
+    val iconSize: Dp = 32.dp
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -98,7 +102,7 @@ fun AppNavigation(navController: NavHostController,
                             tint = if(currentRoute == "home")
                                 MaterialTheme.colorScheme.primary
                             else MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.size(ICON_SIZE)
+                            modifier = Modifier.size(iconSize)
                         )
                     }
                     IconButton(
@@ -117,7 +121,7 @@ fun AppNavigation(navController: NavHostController,
                             tint = if(currentRoute == "transactions")
                                 MaterialTheme.colorScheme.primary
                             else MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.size(ICON_SIZE)
+                            modifier = Modifier.size(iconSize)
                         )
                     }
                     IconButton(
@@ -127,7 +131,7 @@ fun AppNavigation(navController: NavHostController,
                             imageVector = Icons.Filled.Add,
                             contentDescription = "Add",
                             tint = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.size(ICON_SIZE)
+                            modifier = Modifier.size(iconSize)
                         )
                     }
                     IconButton(
@@ -146,12 +150,12 @@ fun AppNavigation(navController: NavHostController,
                             tint = if(currentRoute == "upcoming")
                                 MaterialTheme.colorScheme.primary
                             else MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.size(ICON_SIZE)
+                            modifier = Modifier.size(iconSize)
                         )
                     }
                     IconButton(
                         onClick = {
-                            if (currentRoute != "settings") {
+                            if(currentRoute != "settings") {
                                 navController.navigate("settings") {
                                     launchSingleTop = true
                                     restoreState = true
@@ -165,7 +169,7 @@ fun AppNavigation(navController: NavHostController,
                             tint = if(currentRoute == "settings")
                                 MaterialTheme.colorScheme.primary
                                 else MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.size(ICON_SIZE)
+                            modifier = Modifier.size(iconSize)
                         )
                     }
                 }
@@ -189,7 +193,7 @@ fun AppNavigation(navController: NavHostController,
                 )
             }
             composable("add_transaction/{type}") { backStackEntry ->
-                val transactionType = backStackEntry.arguments?.getString("type")
+                val transactionType: String? = backStackEntry.arguments?.getString("type")
                 AddTransactionScreen(transactionType, context = LocalContext.current)
             }
         }

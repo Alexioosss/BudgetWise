@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.budgetwise.ui.domain.models.FontSize
 import com.example.budgetwise.ui.domain.models.ThemeMode
@@ -18,23 +19,21 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
         setContent {
             var themeMode by remember { mutableStateOf(ThemeMode.SYSTEM) }
             var fontSize by remember { mutableStateOf(FontSize.MEDIUM) }
             BudgetWiseTheme(
-                darkTheme = when (themeMode) {
-                ThemeMode.LIGHT -> false
-                ThemeMode.DARK -> true
-                ThemeMode.SYSTEM -> isSystemInDarkTheme()
+                darkTheme = when(themeMode) {
+                    ThemeMode.LIGHT -> false
+                    ThemeMode.DARK -> true
+                    ThemeMode.SYSTEM -> isSystemInDarkTheme()
                 },
                 fontSize = fontSize
             ) {
-                val navController = rememberNavController()
+                val navController: NavHostController = rememberNavController()
                 AppNavigation(
                     navController,
                     currentThemeMode = themeMode,

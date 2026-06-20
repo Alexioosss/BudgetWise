@@ -27,6 +27,7 @@ import androidx.compose.material.icons.automirrored.filled.Label
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -37,6 +38,7 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerDialog
+import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
@@ -46,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -54,9 +57,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.budgetwise.ui.components.FormInputCard
 import com.example.budgetwise.ui.components.PageHeader
 import com.example.budgetwise.ui.components.ReusableButton
-import com.example.budgetwise.ui.displayToast
+import com.example.budgetwise.ui.domain.models.Categories
 import com.example.budgetwise.ui.domain.models.TransactionRecurrence
 import com.example.budgetwise.ui.domain.models.TransactionTypes
+import com.example.budgetwise.ui.toast.displayToast
 import com.example.budgetwise.ui.viewmodels.TransactionsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -66,24 +70,22 @@ fun AddTransactionScreen(
     viewModel: TransactionsViewModel = hiltViewModel(),
     context: Context
 ) {
-    val type = when(transactionType) {
+    val type: TransactionTypes = when(transactionType) {
         "incoming" -> TransactionTypes.INCOMING
         "outgoing" -> TransactionTypes.OUTGOING
         else -> TransactionTypes.OUTGOING
     }
 
-    LaunchedEffect(type) {
-        viewModel.setTransactionType(type)
-    }
+    LaunchedEffect(type) { viewModel.setTransactionType(type) }
 
-    val accentColor = if(transactionType == "incoming") colorScheme.primary else colorScheme.error
-    val categories = viewModel.getCategories()
+    val accentColor: Color = if(transactionType == "incoming") colorScheme.primary else colorScheme.error
+    val categories: List<Categories> = viewModel.getCategories()
 
-    val state = viewModel.uiState.collectAsState().value
-    val initialMillis = state.dateMillis
+    val state: AddTransactionUiState = viewModel.uiState.collectAsState().value
+    val initialMillis: Long? = state.dateMillis
 
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = initialMillis)
-    val timePickerState = rememberTimePickerState()
+    val datePickerState: DatePickerState = rememberDatePickerState(initialSelectedDateMillis = initialMillis)
+    val timePickerState: TimePickerState = rememberTimePickerState()
 
     if(state.isSuccessful) {
         displayToast(context, "Transaction recorded successfully!")
@@ -119,8 +121,8 @@ fun AddTransactionScreen(
                     BasicTextField(
                         value = state.amount,
                         onValueChange = { input ->
-                            val filteredInput = input.filter { it.isDigit() || it == '.' }
-                            if (filteredInput.count { it == '.' } <= 1) {
+                            val filteredInput: String = input.filter { it.isDigit() || it == '.' }
+                            if(filteredInput.count { it == '.' } <= 1) {
                                 viewModel.updateAmount(filteredInput)
                             }
                         },
@@ -135,7 +137,7 @@ fun AddTransactionScreen(
                             .widthIn(min = 48.dp, max = 200.dp),
                         decorationBox = { innerTextField ->
                             Box {
-                                if (state.amount.isEmpty()) {
+                                if(state.amount.isEmpty()) {
                                     Text(
                                         text = "0.00",
                                         style = MaterialTheme.typography.headlineLarge.copy(
@@ -190,7 +192,7 @@ fun AddTransactionScreen(
                                 .replaceFirstChar { it.uppercase() }
                                 .ifEmpty { "Select a category" },
                             style = MaterialTheme.typography.bodyLarge,
-                            color = if (state.category.isEmpty())
+                            color = if(state.category.isEmpty())
                                 colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
                             else colorScheme.onBackground
                         )
@@ -349,7 +351,7 @@ fun AddTransactionScreen(
                     modifier = Modifier.fillMaxWidth(),
                     decorationBox = { innerTextField ->
                         Box {
-                            if (state.notes.isEmpty()) {
+                            if(state.notes.isEmpty()) {
                                 Text(
                                     text = "Enter any notes about the transaction here",
                                     style = MaterialTheme.typography.bodySmall.copy(
@@ -391,7 +393,7 @@ fun AddTransactionScreen(
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-            if (state.isRecurring) {
+            if(state.isRecurring) {
                 FormInputCard(
                     label = "Recurrence Interval",
                     modifier = Modifier.fillMaxWidth(0.9f)

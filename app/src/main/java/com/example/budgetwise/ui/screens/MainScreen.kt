@@ -28,10 +28,9 @@ import com.example.budgetwise.ui.viewmodels.TransactionsViewModel
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun MainScreen(
-    viewModel: TransactionsViewModel = hiltViewModel()
-) {
+fun MainScreen(viewModel: TransactionsViewModel = hiltViewModel()) {
     val tomorrowTransactions by viewModel.tomorrowTransactions.collectAsState()
+
     PageHeader(
         title = "Budget Wise",
         subtitle = null

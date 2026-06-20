@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -34,10 +35,10 @@ fun TransactionCard(
     transactionType: TransactionTypes,
     recurrenceInterval: TransactionRecurrence?
 ) {
-    val amountColor = if(transactionType == TransactionTypes.INCOMING)
-        MaterialTheme.colorScheme.primary
-    else MaterialTheme.colorScheme.error
-    val amountPrefix = if(transactionType == TransactionTypes.INCOMING) "+ £" else "- £"
+    val amountColor: Color = if(transactionType == TransactionTypes.INCOMING)
+        MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+    val amountPrefix: String = if(transactionType == TransactionTypes.INCOMING) "+ £" else "- £"
+
     Row(
         modifier = modifier
             .fillMaxWidth()

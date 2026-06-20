@@ -18,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
@@ -33,6 +34,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
@@ -40,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.budgetwise.ui.components.PageHeader
 import com.example.budgetwise.ui.components.TransactionCard
+import com.example.budgetwise.ui.domain.models.Transaction
 import com.example.budgetwise.ui.domain.models.TransactionTypes
 import com.example.budgetwise.ui.viewmodels.TransactionsViewModel
 import kotlinx.coroutines.delay
@@ -47,20 +51,19 @@ import java.time.format.DateTimeFormatter
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
-fun TransactionsScreen(
-    viewModel: TransactionsViewModel = hiltViewModel()
-) {
+fun TransactionsScreen(viewModel: TransactionsViewModel = hiltViewModel()) {
     var selectedOption by remember { mutableStateOf("Incoming") }
-    val borderColour = colorScheme.primary
+    val borderColour: Color = colorScheme.primary
     val transactions by viewModel.transactions.collectAsState()
-    val filteredTransactions = transactions.filter {
+    val filteredTransactions: List<Transaction> = transactions.filter {
         when(selectedOption) {
             "Incoming" -> it.transactionType == TransactionTypes.INCOMING
             "Outgoing" -> it.transactionType == TransactionTypes.OUTGOING
             else -> true
         }
     }
-    val haptic = LocalHapticFeedback.current
+    val haptic: HapticFeedback = LocalHapticFeedback.current
+
     PageHeader(
         title = "Transactions",
         subtitle = "Manage your transactions here"
@@ -68,7 +71,7 @@ fun TransactionsScreen(
         Spacer(modifier = Modifier.height(25.dp))
         Row(modifier = Modifier.fillMaxWidth()) {
             listOf("Incoming", "Outgoing").forEachIndexed { _, option ->
-                val isSelected = selectedOption == option
+                val isSelected: Boolean = selectedOption == option
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -76,7 +79,7 @@ fun TransactionsScreen(
                         .then(
                             if(isSelected) {
                                 Modifier.drawBehind {
-                                    val stroke = 3.dp.toPx()
+                                    val stroke: Float = 3.dp.toPx()
                                     drawLine(
                                         borderColour, Offset(0f, 0f),
                                         Offset(size.width, 0f), stroke
@@ -92,7 +95,7 @@ fun TransactionsScreen(
                                 }
                             } else {
                                 Modifier.drawBehind {
-                                    val stroke = 1.dp.toPx()
+                                    val stroke: Float = 1.dp.toPx()
                                     drawLine(
                                         borderColour, Offset(0f, size.height),
                                         Offset(size.width, size.height), stroke
@@ -107,7 +110,7 @@ fun TransactionsScreen(
                         text = option,
                         style = MaterialTheme.typography.headlineSmall,
                         color = borderColour,
-                        fontWeight = if (isSelected) FontWeight.Bold
+                        fontWeight = if(isSelected) FontWeight.Bold
                         else FontWeight.Normal
                     )
                 }
@@ -117,8 +120,8 @@ fun TransactionsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .drawBehind {
-                    val stroke = 2.dp.toPx()
-                    val half = stroke / 2
+                    val stroke: Float = 2.dp.toPx()
+                    val half: Float = stroke / 2
                     drawLine(
                         borderColour,
                         Offset(half, 0f),
@@ -138,7 +141,7 @@ fun TransactionsScreen(
                 .padding(16.dp)
         ) {
             items(filteredTransactions, key = { it.id ?: it.hashCode().toLong() }) { transaction ->
-                val dismissState = rememberSwipeToDismissBoxState(
+                val dismissState: SwipeToDismissBoxState = rememberSwipeToDismissBoxState(
                     positionalThreshold = { totalDistance -> totalDistance * 0.85f }
                 )
                 var deleted by remember { mutableStateOf(false) }

@@ -25,8 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TransactionsViewModel @Inject constructor(
-    private val repository: TransactionRepository
-) : ViewModel() {
+    private val repository: TransactionRepository): ViewModel() {
     private val _transactions = MutableStateFlow<List<Transaction>>(emptyList())
     private val _upcomingTransactions = MutableStateFlow<List<Transaction>>(emptyList())
     private val _tomorrowTransactions = MutableStateFlow<List<Transaction>>(emptyList())
@@ -37,26 +36,24 @@ class TransactionsViewModel @Inject constructor(
     val tomorrowTransactions: StateFlow<List<Transaction>> = _tomorrowTransactions
     val uiState: StateFlow<AddTransactionUiState> = _uiState
 
-    init {
-        loadTransactions()
-    }
+    init { loadTransactions() }
 
     private fun loadTransactions() {
         viewModelScope.launch {
-            val all = repository.getAll()
+            val all: List<Transaction> = repository.getAll()
             _transactions.value = all
 
             _tomorrowTransactions.value = all.filter { t ->
-                val tomorrowDate = LocalDate.now().plusDays(1)
+                val tomorrowDate: LocalDate = LocalDate.now().plusDays(1)
                 if(t.recurrence != null) {
-                    val next = nextOccurrence(t.date, t.recurrence)
+                    val next: LocalDateTime = nextOccurrence(t.date, t.recurrence)
                     next.toLocalDate() == tomorrowDate
                 } else {
                     t.date.toLocalDate() == tomorrowDate
                 }
             }
 
-            val now = LocalDateTime.now()
+            val now: LocalDateTime = LocalDateTime.now()
             val upcoming = all.mapNotNull { t->
                 when {
                     t.recurrence != null -> {
@@ -73,8 +70,8 @@ class TransactionsViewModel @Inject constructor(
 
     private fun nextOccurrence(original: LocalDateTime,
                                interval: TransactionRecurrence): LocalDateTime {
-        var next = original
-        val now = LocalDateTime.now()
+        var next: LocalDateTime = original
+        val now: LocalDateTime = LocalDateTime.now()
         while(next.isBefore(now)) {
             next = when(interval) {
                 TransactionRecurrence.DAILY -> next.plusDays(1)
@@ -113,10 +110,10 @@ class TransactionsViewModel @Inject constructor(
 
     fun onDateSelected(utcMillis: Long?) {
         if(utcMillis == null) { return }
-        val localDate = Instant.ofEpochMilli(utcMillis)
+        val localDate: LocalDate = Instant.ofEpochMilli(utcMillis)
             .atZone(ZoneOffset.UTC)
             .toLocalDate()
-        val correctedMillis = localDate
+        val correctedMillis: Long = localDate
             .atStartOfDay(ZoneId.systemDefault())
             .toInstant()
             .toEpochMilli()
@@ -172,13 +169,13 @@ class TransactionsViewModel @Inject constructor(
     }
 
     private fun formatTime(hour: Int, minute: Int): String {
-        val hourFormatted = hour.toString().padStart(2, '0')
-        val minuteFormatted = minute.toString().padStart(2, '0')
+        val hourFormatted: String = hour.toString().padStart(2, '0')
+        val minuteFormatted: String = minute.toString().padStart(2, '0')
         return "$hourFormatted:$minuteFormatted"
     }
 
     fun addTransaction() {
-        val state = _uiState.value
+        val state: AddTransactionUiState = _uiState.value
         if(state.dateMillis == null) return
         if(state.amount.isBlank()) return
         if(state.category.isBlank()) return

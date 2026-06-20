@@ -7,15 +7,12 @@ import com.example.budgetwise.ui.domain.models.Transaction
 import javax.inject.Inject
 
 class TransactionRepositoryImplementation @Inject constructor(
-    private val dao: TransactionDAO
-): TransactionRepository {
+    private val dao: TransactionDAO): TransactionRepository {
     override suspend fun getAll(): List<Transaction> {
         return dao.getAllTransactions().map { it.toDomain() }
     }
 
-    override suspend fun deleteAll() {
-        dao.deleteAll()
-    }
+    override suspend fun deleteAll() { dao.deleteAll() }
 
     override suspend fun getById(id: Long): Transaction? {
         return dao.getTransactionById(id)?.toDomain()
@@ -29,7 +26,5 @@ class TransactionRepositoryImplementation @Inject constructor(
         dao.insertAll(transactionEntities.map { it.toEntity() })
     }
 
-    override suspend fun deleteById(id: Long) {
-        dao.deleteById(id)
-    }
+    override suspend fun deleteById(id: Long) { dao.deleteById(id) }
 }

@@ -65,9 +65,7 @@ fun SettingsScreen(
                 )
             }
         }
-        Spacer(
-            modifier = Modifier.height(8.dp)
-        )
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "Font Size",
             style = MaterialTheme.typography.headlineSmall,

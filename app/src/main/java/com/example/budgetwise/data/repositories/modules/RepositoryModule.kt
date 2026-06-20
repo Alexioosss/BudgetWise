@@ -12,9 +12,7 @@ import javax.inject.Singleton
 @Module @InstallIn(SingletonComponent::class)
 object RepositoryModule {
     @Provides @Singleton
-    fun provideTransactionRepository(
-        dao: TransactionDAO
-    ): TransactionRepository {
+    fun provideTransactionRepository(dao: TransactionDAO): TransactionRepository {
         return TransactionRepositoryImplementation(dao)
     }
 }

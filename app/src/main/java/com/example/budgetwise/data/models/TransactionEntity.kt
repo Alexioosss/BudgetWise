@@ -12,5 +12,5 @@ data class TransactionEntity(
     val category: String,
     val notes: String?,
     val transactionType: TransactionTypes,
-    val recurrenceInterval: String?
+    val recurrenceInterval: String? = null
 )
