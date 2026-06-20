@@ -2,14 +2,14 @@ package com.example.budgetwise.ui.domain.models
 
 import java.time.LocalDateTime
 
-class Transaction(
-    val id: Long,
+data class Transaction(
+    val id: Long?,
     val date: LocalDateTime,
     val amount: Double,
     val category: Categories,
     val notes: String? = null,
     val transactionType: TransactionTypes,
-    val recurringDate: LocalDateTime?
+    val recurrence: TransactionRecurrence?
 ) {
     init {
         require(amount >= 0) { "Transaction amount cannot be negative" }
@@ -24,12 +24,12 @@ class Transaction(
     }
 
     override fun hashCode(): Int {
-        return id.toInt()
+        return id?.toInt() ?: 0
     }
 
     override fun toString(): String {
         return "Transaction(id=$id, date=$date, amount=$amount, " +
                 "category=$category, notes=$notes, transactionType=${transactionType.name}" +
-                if(recurringDate != null) ", recurringDate=$recurringDate)" else ")"
+                if(recurrence != null) ", recurringInterval=$recurrence)" else ")"
     }
 }

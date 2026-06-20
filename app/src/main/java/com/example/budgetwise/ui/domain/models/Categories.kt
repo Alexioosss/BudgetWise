@@ -1,7 +1,10 @@
 package com.example.budgetwise.ui.domain.models
 
-enum class TransactionTypes { INCOMING, OUTGOING }
-enum class Categories(val transactionTypes: TransactionTypes, val label: String) {
+enum class TransactionTypes(val label: String) {
+    INCOMING("Income"),
+    OUTGOING("Expense")
+}
+enum class Categories(val transactionType: TransactionTypes, val label: String) {
     // Income
     SALARY(TransactionTypes.INCOMING, "Salary"),
     FREELANCE(TransactionTypes.INCOMING, "Freelance"),

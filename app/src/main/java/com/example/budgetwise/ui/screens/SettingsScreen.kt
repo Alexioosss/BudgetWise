@@ -2,7 +2,6 @@ package com.example.budgetwise.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,14 +9,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.budgetwise.ui.components.PageHeader
 import com.example.budgetwise.ui.domain.models.FontSize
 import com.example.budgetwise.ui.domain.models.ThemeMode
 
@@ -28,23 +28,10 @@ fun SettingsScreen(
     currentFontSize: FontSize,
     onFontSizeChange: (FontSize) -> Unit
 ) {
-    Column(
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 0.dp)
+    PageHeader(
+        title = "Settings",
+        subtitle = "Adjust app settings to suit your preferences"
     ) {
-        Text(
-            text = "Settings",
-            style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Text(
-            text = "Adjust app settings to suit your preferences",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Left,
-            modifier = Modifier.fillMaxWidth().padding(top = 20.dp)
-        )
         Spacer(
             modifier = Modifier.height(25.dp)
         )
@@ -59,20 +46,22 @@ fun SettingsScreen(
                     .fillMaxWidth()
                     .clickable { onThemeSelected(theme) }
                     .padding(vertical = 2.dp)
-                    .background(MaterialTheme.colorScheme.background),
+                    .background(colorScheme.background),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 RadioButton(
                     selected = selectedTheme == theme,
                     onClick = { onThemeSelected(theme) },
                     colors = RadioButtonDefaults.colors(
-                        selectedColor = MaterialTheme.colorScheme.primary,
-                        unselectedColor = MaterialTheme.colorScheme.onSurface
+                        selectedColor = colorScheme.primary,
+                        unselectedColor = colorScheme.onSurface
                     )
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = theme.name.lowercase().replaceFirstChar { it.uppercase() }
+                    text = theme.name
+                        .lowercase()
+                        .replaceFirstChar { it.uppercase() }
                 )
             }
         }
@@ -90,19 +79,21 @@ fun SettingsScreen(
                     .fillMaxWidth()
                     .clickable { onFontSizeChange(size) }
                     .padding(vertical = 2.dp)
-                    .background(MaterialTheme.colorScheme.background),
+                    .background(colorScheme.background),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 RadioButton(
                     selected = currentFontSize == size,
                     onClick = { onFontSizeChange(size) },
                     colors = RadioButtonDefaults.colors(
-                        selectedColor = MaterialTheme.colorScheme.primary,
-                        unselectedColor = MaterialTheme.colorScheme.onSurface
+                        selectedColor = colorScheme.primary,
+                        unselectedColor = colorScheme.onSurface
                     )
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = size.name.lowercase().replaceFirstChar { it.uppercase() })
+                Text(text = size.name
+                    .lowercase()
+                    .replaceFirstChar { it.uppercase() })
             }
         }
     }

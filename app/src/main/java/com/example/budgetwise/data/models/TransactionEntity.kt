@@ -6,11 +6,11 @@ import com.example.budgetwise.ui.domain.models.TransactionTypes
 
 @Entity(tableName = "transactions")
 data class TransactionEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long,
+    @PrimaryKey(autoGenerate = true) val id: Long? = null,
     val date: Long,
     val amount: Double,
     val category: String,
     val notes: String?,
     val transactionType: TransactionTypes,
-    val recurringDate: Long?
+    val recurrenceInterval: String?
 )

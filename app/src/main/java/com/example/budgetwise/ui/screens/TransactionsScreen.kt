@@ -3,7 +3,6 @@ package com.example.budgetwise.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,9 +36,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.budgetwise.ui.components.PageHeader
 import com.example.budgetwise.ui.components.TransactionCard
 import com.example.budgetwise.ui.domain.models.TransactionTypes
 import com.example.budgetwise.ui.viewmodels.TransactionsViewModel
@@ -62,62 +61,40 @@ fun TransactionsScreen(
         }
     }
     val haptic = LocalHapticFeedback.current
-    Column(
-        modifier = Modifier.fillMaxSize()
+    PageHeader(
+        title = "Transactions",
+        subtitle = "Manage your transactions here"
     ) {
-        Text(
-            text = "Transactions",
-            style = MaterialTheme.typography.headlineLarge,
-            color = colorScheme.onBackground,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Text(
-            text = "Manage your transactions here",
-            style = MaterialTheme.typography.bodySmall,
-            color = colorScheme.onBackground,
-            textAlign = TextAlign.Left,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp, top = 20.dp)
-        )
-        Spacer(
-            modifier = Modifier.height(25.dp)
-        )
-
-        Row(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            listOf("Incoming", "Outgoing").forEachIndexed { index, option ->
+        Spacer(modifier = Modifier.height(25.dp))
+        Row(modifier = Modifier.fillMaxWidth()) {
+            listOf("Incoming", "Outgoing").forEachIndexed { _, option ->
                 val isSelected = selectedOption == option
                 Box(
                     modifier = Modifier
                         .weight(1f)
                         .clickable { selectedOption = option }
                         .then(
-                            if (isSelected) {
+                            if(isSelected) {
                                 Modifier.drawBehind {
-                                    val stroke = 4.dp.toPx()
-                                    val half = stroke / 2
+                                    val stroke = 3.dp.toPx()
                                     drawLine(
-                                        borderColour,
-                                        Offset(0f, half),
-                                        Offset(size.width, half), stroke
+                                        borderColour, Offset(0f, 0f),
+                                        Offset(size.width, 0f), stroke
                                     )
-                                    drawLine(borderColour, Offset(0f, 0f), Offset(0f, size.height), stroke)
-                                    val sideX = if(index == 0) size.width else 0f
                                     drawLine(
-                                        borderColour,
-                                        Offset(sideX, half),
-                                        Offset(sideX, size.height), stroke / 2
+                                        borderColour, Offset(0f, 0f),
+                                        Offset(0f, size.height), stroke
+                                    )
+                                    drawLine(
+                                        borderColour, Offset(size.width, 0f),
+                                        Offset(size.width, size.height), stroke
                                     )
                                 }
                             } else {
                                 Modifier.drawBehind {
-                                    val stroke = 2.dp.toPx()
+                                    val stroke = 1.dp.toPx()
                                     drawLine(
-                                        borderColour,
-                                        Offset(0f, size.height),
+                                        borderColour, Offset(0f, size.height),
                                         Offset(size.width, size.height), stroke
                                     )
                                 }
@@ -130,7 +107,7 @@ fun TransactionsScreen(
                         text = option,
                         style = MaterialTheme.typography.headlineSmall,
                         color = borderColour,
-                        fontWeight = if(isSelected) FontWeight.Bold
+                        fontWeight = if (isSelected) FontWeight.Bold
                         else FontWeight.Normal
                     )
                 }
@@ -160,7 +137,7 @@ fun TransactionsScreen(
                 }
                 .padding(16.dp)
         ) {
-            items(filteredTransactions, key = { it.id }) { transaction ->
+            items(filteredTransactions, key = { it.id ?: it.hashCode().toLong() }) { transaction ->
                 val dismissState = rememberSwipeToDismissBoxState(
                     positionalThreshold = { totalDistance -> totalDistance * 0.85f }
                 )
@@ -170,7 +147,9 @@ fun TransactionsScreen(
                         deleted = true
                         delay(150.milliseconds)
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        viewModel.deleteTransactionById(transaction.id)
+                        transaction.id?.let { id ->
+                            viewModel.deleteTransactionById(id)
+                        }
                     }
                 }
                 if(!deleted) {
@@ -180,7 +159,7 @@ fun TransactionsScreen(
                         enableDismissFromEndToStart = true,
                         content = {
                             TransactionCard(
-                                id = transaction.id,
+                                id = transaction.id ?: 0L,
                                 dateTime = transaction.date.format(
                                     DateTimeFormatter.ofPattern("d MMMM yyyy")
                                 ),
@@ -188,9 +167,7 @@ fun TransactionsScreen(
                                 category = transaction.category,
                                 notes = transaction.notes,
                                 transactionType = transaction.transactionType,
-                                recurringDate = transaction.recurringDate?.format(
-                                    DateTimeFormatter.ofPattern("d MMMM yyyy")
-                                )
+                                recurrenceInterval = null
                             )
                         },
                         backgroundContent = {
@@ -203,9 +180,11 @@ fun TransactionsScreen(
                                     .padding(38.dp),
                                 contentAlignment = Alignment.CenterEnd
                             ) {
-                                Icon(imageVector = Icons.Default.Delete,
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
                                     contentDescription = "Delete",
-                                    tint = colorScheme.error)
+                                    tint = colorScheme.error
+                                )
                             }
                         }
                     )

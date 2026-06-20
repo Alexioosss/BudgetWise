@@ -11,7 +11,7 @@ interface TransactionDAO {
     @Insert suspend fun insertTransaction(transactionEntity: TransactionEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(transactionEntities: List<TransactionEntity>);
+    suspend fun insertAll(transactionEntities: List<TransactionEntity>)
 
     @Query("SELECT * FROM transactions WHERE id = :id")
     suspend fun getTransactionById(id: Long): TransactionEntity?

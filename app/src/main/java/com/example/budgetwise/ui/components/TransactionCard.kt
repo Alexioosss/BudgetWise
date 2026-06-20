@@ -9,15 +9,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.budgetwise.ui.domain.models.Categories
+import com.example.budgetwise.ui.domain.models.TransactionRecurrence
 import com.example.budgetwise.ui.domain.models.TransactionTypes
 
 @Composable
@@ -29,7 +32,7 @@ fun TransactionCard(
     category: Categories,
     notes: String? = null,
     transactionType: TransactionTypes,
-    recurringDate: String?
+    recurrenceInterval: TransactionRecurrence?
 ) {
     val amountColor = if(transactionType == TransactionTypes.INCOMING)
         MaterialTheme.colorScheme.primary
@@ -48,22 +51,31 @@ fun TransactionCard(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = category.label,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
-                text = if(!recurringDate.isNullOrBlank())
-                    "$dateTime - recurring on $recurringDate" else dateTime,
+                text = if(recurrenceInterval != null) "$dateTime - recurring " +
+                        recurrenceInterval.name.lowercase() else dateTime,
                 style = MaterialTheme.typography.bodySmall,
+                fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onSurface
             )
             if(!notes.isNullOrBlank()) {
-                Spacer(modifier = Modifier.height(2.dp))
+                Spacer(modifier = Modifier.height(8.dp))
+                Divider(
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier
+                        .height(1.3.dp)
+                        .fillMaxWidth(0.85f)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = notes,
                     style = MaterialTheme.typography.bodySmall,
+                    fontStyle = FontStyle.Italic,
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
