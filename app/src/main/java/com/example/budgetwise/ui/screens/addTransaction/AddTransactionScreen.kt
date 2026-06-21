@@ -62,6 +62,7 @@ import com.example.budgetwise.ui.domain.models.TransactionRecurrence
 import com.example.budgetwise.ui.domain.models.TransactionTypes
 import com.example.budgetwise.ui.toast.displayToast
 import com.example.budgetwise.ui.viewmodels.TransactionsViewModel
+import kotlin.enums.enumEntries
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -187,10 +188,9 @@ fun AddTransactionScreen(
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = state.category.lowercase()
-                                .replace("_", " ")
-                                .replaceFirstChar { it.uppercase() }
-                                .ifEmpty { "Select a category" },
+                            text = enumEntries<Categories>()
+                                .firstOrNull { it.name == state.category }
+                                ?.label ?: "Select a category",
                             style = MaterialTheme.typography.bodyLarge,
                             color = if(state.category.isEmpty())
                                 colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
@@ -211,7 +211,7 @@ fun AddTransactionScreen(
                         DropdownMenuItem(
                             text = {
                                 Text(
-                                    text = category.name.lowercase()
+                                    text = category.label.lowercase()
                                         .replace("_", " ")
                                         .replaceFirstChar { it.uppercase() },
                                     style = MaterialTheme.typography.bodySmall,
@@ -350,7 +350,7 @@ fun AddTransactionScreen(
                             if(state.notes.isEmpty()) {
                                 Text(
                                     text = "Enter any notes about the transaction here",
-                                    style = MaterialTheme.typography.bodySmall.copy(
+                                    style = MaterialTheme.typography.bodyMedium.copy(
                                         color = colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
                                         textAlign = TextAlign.Start
                                     )
@@ -410,9 +410,11 @@ fun AddTransactionScreen(
                                 .padding(vertical = 16.dp, horizontal = 16.dp)
                         ) {
                             Text(
-                                text = state.recurrenceInterval?.name ?: "Select interval",
+                                text = state.recurrenceInterval?.name?.
+                                lowercase()?.replaceFirstChar
+                                { it.uppercase() } ?: "Select interval",
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = if (state.recurrenceInterval == null)
+                                color = if(state.recurrenceInterval == null)
                                     colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                                 else colorScheme.onSurface
                             )
@@ -423,7 +425,9 @@ fun AddTransactionScreen(
                         ) {
                             TransactionRecurrence.entries.forEach { interval ->
                                 DropdownMenuItem(
-                                    text = { Text(interval.name) },
+                                    text = {
+                                        Text(interval.name.lowercase().replaceFirstChar { it.uppercase() })
+                                    },
                                     onClick = {
                                         viewModel.updateRecurrenceInterval(interval)
                                         viewModel.toggleRecurrenceIntervalExpanded()

@@ -48,8 +48,8 @@ class TransactionsViewModel @Inject constructor(
 
             _tomorrowTransactions.value = all.filter { t ->
                 val tomorrowDate: LocalDate = LocalDate.now().plusDays(1)
-                if(t.recurrence != null) {
-                    val next: LocalDateTime = nextOccurrence(t.date, t.recurrence)
+                if(t.recurrenceInterval != null) {
+                    val next: LocalDateTime = nextOccurrence(t.date, t.recurrenceInterval)
                     next.toLocalDate() == tomorrowDate
                 } else {
                     t.date.toLocalDate() == tomorrowDate
@@ -59,8 +59,8 @@ class TransactionsViewModel @Inject constructor(
             val now: LocalDateTime = LocalDateTime.now()
             val upcoming = all.mapNotNull { t->
                 when {
-                    t.recurrence != null -> {
-                        val next = nextOccurrence(t.date, t.recurrence)
+                    t.recurrenceInterval != null -> {
+                        val next = nextOccurrence(t.date, t.recurrenceInterval)
                         t.copy(date = next)
                     }
                     t.date.isAfter(now) -> { t }
@@ -222,7 +222,7 @@ class TransactionsViewModel @Inject constructor(
                 category = Categories.valueOf(state.category),
                 notes = state.notes,
                 transactionType = transactionType,
-                recurrence = state.recurrenceInterval
+                recurrenceInterval = state.recurrenceInterval
             )
             repository.insert(transaction)
             loadTransactions()
@@ -230,7 +230,12 @@ class TransactionsViewModel @Inject constructor(
         }
     }
 
-    suspend fun deleteTransactionById(id: Long) {
-        repository.deleteById(id)
+    fun deleteTransactionById(id: Long) {
+        viewModelScope.launch {
+            repository.deleteById(id)
+            _transactions.update { currentList ->
+                currentList.filterNot { it.id == id }
+            }
+        }
     }
 }

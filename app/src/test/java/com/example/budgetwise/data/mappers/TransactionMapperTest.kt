@@ -33,7 +33,7 @@ class TransactionMapperTest {
         assert(domain.category.name == entity.category)
         assert(domain.notes.equals(entity.notes))
         assert(domain.transactionType == entity.transactionType)
-        assert(domain.recurrence?.name == entity.recurrenceInterval)
+        assert(domain.recurrenceInterval?.name == entity.recurrenceInterval)
     }
 
     @Test
@@ -46,7 +46,7 @@ class TransactionMapperTest {
             category = Categories.OTHER_INCOME,
             notes = null,
             transactionType = TransactionTypes.INCOMING,
-            recurrence = null
+            recurrenceInterval = null
         )
         // Act
         val entity: TransactionEntity = domain.toEntity()
@@ -57,6 +57,6 @@ class TransactionMapperTest {
         assert(entity.category == domain.category.name)
         assert(entity.notes.equals(domain.notes))
         assert(entity.transactionType == domain.transactionType)
-        assert(entity.recurrenceInterval == domain.recurrence?.name)
+        assert(entity.recurrenceInterval == domain.recurrenceInterval?.name)
     }
 }

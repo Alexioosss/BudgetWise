@@ -9,7 +9,7 @@ data class Transaction(
     val category: Categories,
     val notes: String? = null,
     val transactionType: TransactionTypes,
-    val recurrence: TransactionRecurrence?
+    val recurrenceInterval: TransactionRecurrence?
 ) {
     init { require(amount >= 0) { "Transaction amount cannot be negative" } }
 
@@ -28,6 +28,6 @@ data class Transaction(
     override fun toString(): String {
         return "Transaction(id=$id, date=$date, amount=$amount, " +
                 "category=$category, notes=$notes, transactionType=${transactionType.name}" +
-                if(recurrence != null) ", recurringInterval=$recurrence)" else ")"
+                if(recurrenceInterval != null) ", recurrenceInterval=$recurrenceInterval)" else ")"
     }
 }

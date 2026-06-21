@@ -16,7 +16,7 @@ fun TransactionEntity.toDomain(): Transaction {
         category = Categories.valueOf(this.category),
         notes = this.notes,
         transactionType = this.transactionType,
-        recurrence = this.recurrenceInterval?.let { TransactionRecurrence.valueOf(it) }
+        recurrenceInterval = this.recurrenceInterval?.let { TransactionRecurrence.valueOf(it) }
     )
 }
 
@@ -28,6 +28,6 @@ fun Transaction.toEntity(): TransactionEntity {
         category = this.category.name,
         notes = this.notes,
         transactionType = this.transactionType,
-        recurrenceInterval = this.recurrence?.name
+        recurrenceInterval = this.recurrenceInterval?.name
     )
 }

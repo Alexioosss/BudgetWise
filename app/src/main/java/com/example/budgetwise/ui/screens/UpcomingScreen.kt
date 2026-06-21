@@ -52,7 +52,7 @@ fun UpcomingScreen(viewModel: TransactionsViewModel = hiltViewModel()) {
                         category = transaction.category,
                         notes = transaction.notes,
                         transactionType = transaction.transactionType,
-                        recurrenceInterval = transaction.recurrence
+                        recurrenceInterval = transaction.recurrenceInterval
                     )
                 }
             }

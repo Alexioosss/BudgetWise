@@ -69,7 +69,7 @@ fun MainScreen(viewModel: TransactionsViewModel = hiltViewModel()) {
                         category = tomorrowTransaction.category,
                         notes = tomorrowTransaction.notes,
                         transactionType = tomorrowTransaction.transactionType,
-                        recurrenceInterval = tomorrowTransaction.recurrence
+                        recurrenceInterval = tomorrowTransaction.recurrenceInterval
                     )
                 }
             }
