@@ -233,9 +233,7 @@ fun AddTransactionScreen(
                 onClick = { viewModel.toggleDatePicker() },
                 modifier = Modifier.fillMaxWidth(0.9f)
             ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(0.8f)
-                ) {
+                Column(modifier = Modifier.fillMaxWidth(0.8f)) {
                     Text(
                         text = viewModel.formattedTransactionDate(),
                         style = MaterialTheme.typography.bodyLarge,
@@ -279,9 +277,7 @@ fun AddTransactionScreen(
                 onClick = { viewModel.toggleTimePicker() },
                 modifier = Modifier.fillMaxWidth(0.9f)
             ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(0.9f)
-                ) {
+                Column(modifier = Modifier.fillMaxWidth(0.9f)) {
                     Text(
                         text = viewModel.formattedTransactionTime(),
                         style = MaterialTheme.typography.bodyLarge,

@@ -11,9 +11,7 @@ data class Transaction(
     val transactionType: TransactionTypes,
     val recurrence: TransactionRecurrence?
 ) {
-    init {
-        require(amount >= 0) { "Transaction amount cannot be negative" }
-    }
+    init { require(amount >= 0) { "Transaction amount cannot be negative" } }
 
     override fun equals(other: Any?): Boolean {
         if(this === other) return true

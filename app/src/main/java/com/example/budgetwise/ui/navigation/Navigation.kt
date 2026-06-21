@@ -124,9 +124,7 @@ fun AppNavigation(navController: NavHostController,
                             modifier = Modifier.size(iconSize)
                         )
                     }
-                    IconButton(
-                        onClick = { showBottomSheet.value = true }
-                    ) {
+                    IconButton(onClick = { showBottomSheet.value = true }) {
                         Icon(
                             imageVector = Icons.Filled.Add,
                             contentDescription = "Add",

@@ -16,12 +16,18 @@ interface TransactionDAO {
     @Query("SELECT * FROM transactions WHERE id = :id")
     suspend fun getTransactionById(id: Long): TransactionEntity?
 
+    @Query("SELECT * FROM transactions WHERE date BETWEEN :start AND :end")
+    suspend fun getTransactionsInDateRange(start: Long, end: Long): List<TransactionEntity>
+
+    @Query("SELECT * FROM transactions WHERE date > :now ORDER BY date ASC")
+    suspend fun getUpcomingTransactions(now: Long): List<TransactionEntity>
+
     @Query("SELECT * FROM transactions")
     suspend fun getAllTransactions(): List<TransactionEntity>
 
-    @Query("DELETE FROM transactions")
-    suspend fun deleteAll()
-
     @Query("DELETE FROM transactions WHERE id = :id")
     suspend fun deleteById(id: Long)
+
+    @Query("DELETE FROM transactions")
+    suspend fun deleteAll()
 }

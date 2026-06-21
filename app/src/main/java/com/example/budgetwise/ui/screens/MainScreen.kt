@@ -2,6 +2,7 @@ package com.example.budgetwise.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.budgetwise.ui.components.DailyOverviewCard
 import com.example.budgetwise.ui.components.PageHeader
 import com.example.budgetwise.ui.components.TransactionCard
 import com.example.budgetwise.ui.viewmodels.TransactionsViewModel
@@ -30,12 +32,25 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun MainScreen(viewModel: TransactionsViewModel = hiltViewModel()) {
     val tomorrowTransactions by viewModel.tomorrowTransactions.collectAsState()
+    val dailyOverview by viewModel.todayOverview.collectAsState()
 
     PageHeader(
         title = "Budget Wise",
         subtitle = null
     ) {
         Spacer(modifier = Modifier.height(100.dp))
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box(
+                modifier = Modifier.fillMaxWidth(0.9f),
+                contentAlignment = Alignment.Center
+            ) {
+                DailyOverviewCard(dailyOverview)
+            }
+        }
+        Spacer(modifier = Modifier.height(20.dp))
         if(tomorrowTransactions.isNotEmpty()) {
             LazyColumn(
                 modifier = Modifier

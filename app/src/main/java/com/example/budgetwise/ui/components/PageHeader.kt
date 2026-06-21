@@ -17,10 +17,7 @@ fun PageHeader(
     subtitle: String?,
     content: @Composable () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 0.dp)
-    ) {
+    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 0.dp)) {
         Text(
             text = title,
             style = MaterialTheme.typography.headlineLarge,

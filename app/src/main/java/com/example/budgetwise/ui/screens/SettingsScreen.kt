@@ -32,9 +32,7 @@ fun SettingsScreen(
         title = "Settings",
         subtitle = "Adjust app settings to suit your preferences"
     ) {
-        Spacer(
-            modifier = Modifier.height(25.dp)
-        )
+        Spacer(modifier = Modifier.height(25.dp))
         Text(
             text = "Theme",
             style = MaterialTheme.typography.headlineSmall,

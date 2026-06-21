@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.budgetwise.data.repositories.TransactionRepository
 import com.example.budgetwise.ui.domain.models.Categories
+import com.example.budgetwise.ui.domain.models.DailyOverview
 import com.example.budgetwise.ui.domain.models.Transaction
 import com.example.budgetwise.ui.domain.models.TransactionRecurrence
 import com.example.budgetwise.ui.domain.models.TransactionTypes
@@ -30,11 +31,13 @@ class TransactionsViewModel @Inject constructor(
     private val _upcomingTransactions = MutableStateFlow<List<Transaction>>(emptyList())
     private val _tomorrowTransactions = MutableStateFlow<List<Transaction>>(emptyList())
     private val _uiState = MutableStateFlow(AddTransactionUiState())
+    private val _todayOverview = MutableStateFlow(DailyOverview())
     private var transactionType: TransactionTypes = TransactionTypes.OUTGOING
     val transactions: StateFlow<List<Transaction>> = _transactions
     val upcomingTransactions: StateFlow<List<Transaction>> = _upcomingTransactions
     val tomorrowTransactions: StateFlow<List<Transaction>> = _tomorrowTransactions
     val uiState: StateFlow<AddTransactionUiState> = _uiState
+    val todayOverview: StateFlow<DailyOverview> = _todayOverview
 
     init { loadTransactions() }
 
@@ -60,11 +63,12 @@ class TransactionsViewModel @Inject constructor(
                         val next = nextOccurrence(t.date, t.recurrence)
                         t.copy(date = next)
                     }
-                    t.date.isAfter(now) -> t
-                    else -> null
+                    t.date.isAfter(now) -> { t }
+                    else -> { null }
                 }
             }
             _upcomingTransactions.value = upcoming
+            loadDailyOverview()
         }
     }
 
@@ -81,6 +85,32 @@ class TransactionsViewModel @Inject constructor(
             }
         }
         return next
+    }
+
+    private fun loadDailyOverview() {
+        viewModelScope.launch {
+            val today: LocalDate = LocalDate.now()
+            val start: Long = today.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            val end: Long = today.plusDays(1).atStartOfDay(ZoneId.systemDefault())
+                .toInstant().toEpochMilli()
+
+            val todayTransactions: List<Transaction> = repository.getByDateRange(start, end)
+            val incomingAmount: Double = todayTransactions
+                .filter { it.transactionType == TransactionTypes.INCOMING }
+                .sumOf { it.amount }
+            val outgoingAmount: Double = todayTransactions
+                .filter { it.transactionType == TransactionTypes.OUTGOING }
+                .sumOf { it.amount }
+            val nextUpcoming: Transaction? = repository
+                .getUpcoming(System.currentTimeMillis()).firstOrNull()
+
+            _todayOverview.value = DailyOverview(
+                incomingToday = incomingAmount,
+                outgoingToday = outgoingAmount,
+                netToday = incomingAmount - outgoingAmount,
+                nextUpcoming = nextUpcoming
+            )
+        }
     }
 
     fun setTransactionType(type: TransactionTypes) {
@@ -176,9 +206,9 @@ class TransactionsViewModel @Inject constructor(
 
     fun addTransaction() {
         val state: AddTransactionUiState = _uiState.value
-        if(state.dateMillis == null) return
-        if(state.amount.isBlank()) return
-        if(state.category.isBlank()) return
+        if(state.dateMillis == null) { return }
+        if(state.amount.isBlank()) { return }
+        if(state.category.isBlank()) { return }
 
         viewModelScope.launch {
             val transaction = Transaction(

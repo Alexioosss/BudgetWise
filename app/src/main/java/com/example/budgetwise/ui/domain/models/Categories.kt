@@ -1,29 +1,29 @@
 package com.example.budgetwise.ui.domain.models
 
 enum class TransactionTypes(val label: String) {
-    INCOMING("Income"),
-    OUTGOING("Expense")
+    INCOMING(label = "Income"),
+    OUTGOING(label = "Expense")
 }
 enum class Categories(val transactionType: TransactionTypes, val label: String) {
     // Income
-    SALARY(TransactionTypes.INCOMING, "Salary"),
-    FREELANCE(TransactionTypes.INCOMING, "Freelance"),
-    INVESTMENTS(TransactionTypes.INCOMING, "Investments"),
-    BENEFITS(TransactionTypes.INCOMING, "Benefits"),
-    GIFTS_RECEIVED(TransactionTypes.INCOMING, "Gifts Received"),
-    OTHER_INCOME(TransactionTypes.INCOMING, "Other Income"),
+    SALARY(transactionType = TransactionTypes.INCOMING, label = "Salary"),
+    FREELANCE(transactionType = TransactionTypes.INCOMING, label = "Freelance"),
+    INVESTMENTS(transactionType = TransactionTypes.INCOMING, label = "Investments"),
+    BENEFITS(transactionType = TransactionTypes.INCOMING, label = "Benefits"),
+    GIFTS_RECEIVED(transactionType = TransactionTypes.INCOMING, label = "Gifts Received"),
+    OTHER_INCOME(transactionType = TransactionTypes.INCOMING, label = "Other Income"),
 
     // Expenses
-    HOUSING(TransactionTypes.OUTGOING, "Housing & Rent"),
-    FOOD(TransactionTypes.OUTGOING, "Food & Dining"),
-    TRANSPORT(TransactionTypes.OUTGOING, "Transport"),
-    VEHICLES(TransactionTypes.OUTGOING, "Vehicles"),
-    HEALTH(TransactionTypes.OUTGOING, "Health & Medical"),
-    GYM(TransactionTypes.OUTGOING, "Gym & Fitness"),
-    ENTERTAINMENT(TransactionTypes.OUTGOING, "Entertainment & Cinema"),
-    SHOPPING(TransactionTypes.OUTGOING, "Shopping & Clothing"),
-    SAVINGS(TransactionTypes.OUTGOING, "Savings"),
-    EDUCATION(TransactionTypes.OUTGOING, "Education"),
-    SUBSCRIPTIONS(TransactionTypes.OUTGOING, "Subscriptions"),
-    OTHER_EXPENSE(TransactionTypes.OUTGOING, "Other Expense")
+    HOUSING(transactionType = TransactionTypes.OUTGOING, label = "Housing & Rent"),
+    FOOD(transactionType = TransactionTypes.OUTGOING, label = "Food & Dining"),
+    TRANSPORT(transactionType = TransactionTypes.OUTGOING, label = "Transport"),
+    VEHICLES(transactionType = TransactionTypes.OUTGOING, label = "Vehicles"),
+    HEALTH(transactionType = TransactionTypes.OUTGOING, label = "Health & Medical"),
+    GYM(transactionType = TransactionTypes.OUTGOING, label = "Gym & Fitness"),
+    ENTERTAINMENT(transactionType = TransactionTypes.OUTGOING, label = "Entertainment & Cinema"),
+    SHOPPING(transactionType = TransactionTypes.OUTGOING, label = "Shopping & Clothing"),
+    SAVINGS(transactionType = TransactionTypes.OUTGOING, label = "Savings"),
+    EDUCATION(transactionType = TransactionTypes.OUTGOING, label = "Education"),
+    SUBSCRIPTIONS(transactionType = TransactionTypes.OUTGOING, label = "Subscriptions"),
+    OTHER_EXPENSE(transactionType = TransactionTypes.OUTGOING, label = "Other Expense")
 }
